@@ -14,7 +14,7 @@ def get_all_chirps():
 
 def delete_chirp(chirp_id):
     conn = get_db()
-    conn.execute('DELETE FROM chirp WHERE id = ?', (chirp_id,))
+    conn.execute('DELETE FROM chirp WHERE id = :id', {'id': chirp_id})
     conn.commit()
 
 
@@ -25,7 +25,7 @@ def get_all_users():
 
 def delete_user(user_id):
     conn = get_db()
-    conn.execute('DELETE FROM user WHERE id = ?', (user_id,))
+    conn.execute('DELETE FROM user WHERE id = :id', {'id': user_id})
     conn.commit()
 
 
