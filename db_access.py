@@ -6,15 +6,27 @@ from flask import app, g
 def get_all_chirps():
     conn = get_db()
     return conn.execute('''
-        select c.id, c.body, c.datetime, u.handle
-        from chirp c, user u
-        where c.user_id = u.id
+        SELECT c.id, c.body, c.datetime, u.handle
+        FROM chirp c, user u
+        WHERE c.user_id = u.id
     ''').fetchall()
+
+
+def delete_chirp(chirp_id):
+    conn = get_db()
+    conn.execute('DELETE FROM chirp WHERE id = ?', (chirp_id,))
+    conn.commit()
 
 
 def get_all_users():
     conn = get_db()
-    return conn.execute('select id, handle from user').fetchall()
+    return conn.execute('SELECT id, handle FROM user').fetchall()
+
+
+def delete_user(user_id):
+    conn = get_db()
+    conn.execute('DELETE FROM user WHERE id = ?', (user_id,))
+    conn.commit()
 
 
 def get_db():
