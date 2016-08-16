@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body %}
+  <h2>Tweets</h2>
+    {% if users %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Handle</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user['id'] }}</td><td>{{ user['handle'] }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h4>There are no users</h4>
+    {% endif %}
+{% endblock %}
