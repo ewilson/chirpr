@@ -31,9 +31,8 @@ def delete_user(user_id):
 
 def add_user(handle):
     conn = get_db()
-    big_id, = conn.execute('SELECT MAX(id) AS id FROM user')
-    conn.execute('INSERT INTO user (id, handle, admin) values (:id, :handle, :admin)',
-                 {'id': big_id[0] + 1, 'handle': handle, 'admin': 0})
+    conn.execute('INSERT INTO user (handle, admin) values (:handle, :admin)',
+                 {'handle': handle, 'admin': 0})
     conn.commit()
 
 

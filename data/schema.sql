@@ -1,11 +1,11 @@
 CREATE TABLE user (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     handle TEXT NOT NULL,
     admin INT
 );
 
 CREATE TABLE chirp (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     body TEXT NOT NULL,
     user_id INT,
     datetime TEXT NOT NULL,
