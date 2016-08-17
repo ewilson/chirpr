@@ -4,3 +4,12 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 20px;
 }
+
+table, th, td {
+    border: 1px solid darkblue;
+    padding: 5px;
+}
+
+table {
+    border-collapse: collapse;
+}
