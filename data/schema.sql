@@ -1,3 +1,4 @@
+-- Original schema, do not modify. Changes will be added in migrations
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     handle TEXT NOT NULL,

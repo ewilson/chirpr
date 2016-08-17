@@ -1,5 +1,13 @@
 #!/usr/local/bin/python3
-
+#
+# To reset from captured DB, run:
+#
+# ./init_db.py
+#
+# To reset to empty DB, run:
+#
+# ./init_db.py new
+#
 import os
 from sys import argv
 import sqlite3

@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
-
-import os, sys
+#
+# Applies all new migration scripts to DB
+#
+import os
 import sqlite3
 
 filenames = [fn for fn in os.listdir('data/migrations') if fn.endswith('.sql')]
