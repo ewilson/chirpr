@@ -29,6 +29,14 @@ def delete_user(user_id):
     conn.commit()
 
 
+def add_user(handle):
+    conn = get_db()
+    big_id, = conn.execute('SELECT MAX(id) AS id FROM user')
+    conn.execute('INSERT INTO user (id, handle, admin) values (:id, :handle, :admin)',
+                 {'id': big_id[0] + 1, 'handle': handle, 'admin': 0})
+    conn.commit()
+
+
 def get_db():
     if not hasattr(g, 'chirpr.db'):
         g.conn = connect_db()

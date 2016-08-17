@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template, redirect, url_for
+from flask import Flask, request, g, render_template, redirect, url_for
 
 import db_access
 
@@ -19,6 +19,13 @@ def users():
 @app.route('/admin/user/delete/<user_id>')
 def delete_user(user_id):
     db_access.delete_user(user_id)
+    return redirect(url_for('users'))
+
+
+@app.route('/admin/user/add', methods=['POST'])
+def add_user():
+    handle = request.form.get('handle')
+    db_access.add_user(handle)
     return redirect(url_for('users'))
 
 

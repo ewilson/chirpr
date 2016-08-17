@@ -2,22 +2,27 @@
 {% block body %}
   <h2>Tweets</h2>
     {% if users %}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Handle</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-          <tr>
-            <td>{{ user.id }}</td><td>{{ user.handle }}</td>
-            <td><a href="{{url_for('delete_user', user_id=user.id)}}">Delete</a></td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <h4>There are no users</h4>
-    {% endif %}
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Handle</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td><td>{{ user.handle }}</td>
+          <td><a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <h4>There are no users</h4>
+  {% endif %}
+  <h3>Add new user</h3>
+  <form action="{{ url_for('add_user') }}" method="post">
+    <label>Username: <input type="text" name="handle"/></label><br/>
+    <input type="submit" value="Submit"><br/>
+  </form>
 {% endblock %}
