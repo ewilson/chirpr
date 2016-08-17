@@ -5,13 +5,14 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th><th>Handle</th><th>Delete</th>
+          <th>ID</th><th>Handle</th><th>Admin</th><th>Delete</th>
         </tr>
       </thead>
       <tbody>
       {% for user in users %}
         <tr>
           <td>{{ user.id }}</td><td>{{ user.handle }}</td>
+          <td>{{ 'Yes' if user.admin else 'No' }}</td>
           <td><a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a></td>
         </tr>
       {% endfor %}

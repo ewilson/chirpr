@@ -21,7 +21,7 @@ def delete_chirp(chirp_id):
 
 def get_all_users():
     conn = get_db()
-    return conn.execute('SELECT id, handle FROM user').fetchall()
+    return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
 def delete_user(user_id):
