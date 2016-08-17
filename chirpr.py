@@ -43,9 +43,3 @@ def delete_chirp(chirp_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-@app.teardown_appcontext
-def close_db(error):
-    if hasattr(g, 'conn'):
-        g.conn.close()

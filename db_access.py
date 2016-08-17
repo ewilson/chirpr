@@ -2,6 +2,7 @@ import sqlite3
 
 from flask import app, g
 
+from chirpr import app
 
 def get_all_chirps():
     conn = get_db()
@@ -46,3 +47,9 @@ def connect_db():
     conn = sqlite3.connect('data/chirpr.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'conn'):
+        g.conn.close()
