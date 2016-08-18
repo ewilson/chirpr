@@ -2,13 +2,20 @@
 
 This is the skeleton of a Twitter clone project
 
-#### Installation
+#### Fork and clone repo
 
-First, fork this repository, then clone your fork into the directory of your choice.
+1. Log into GitHub
+1. Click the fork button [here](https://github.com/ewilson/chirpr)
+1. Execute `git clone https://github.com/ewilson/chirpr.git` in the terminal, in the directory you want the project to be.
 
-Next, if necessary, install Flask (either globally or into a virtual environment).
+#### Install dependencies in virtualenvironment
 
-    $ pip install -r requirements.txt
+Execute the following commands in PowerShell or Bash
+
+1. `cd chirpr`
+1. `pyvenv venv`
+1. `source venv/bin/activate`
+1. `pip3 install -r requirements.txt`
 
 #### Running the application
 
@@ -18,9 +25,39 @@ Now navigate to [localhost:5000](http://localhost:5000/) to verify that it is ru
 
 #### DB
 
-- init db
-- db migration scripts
+To set up the test database, run
 
-#### Pull requests
+    $ ./init_db.py
 
-I will create a branch for your PR target.
+#### DB Migrations
+
+When you need to make changes to the DB structure -- suppose you add a column to a table --
+you will need to add a migration script to `data/migrations`. This scripts should follow a naming
+convention like follows:
+
+- `01_Example_change.sql`
+- `02_Another_change.sql`
+
+This series of scripts should allow another user to run `data/db_migrate.py` in order to transform
+the test database into the structure that your changes require.
+
+It will be common for changes to the application to require changes to the database structure.
+
+#### Trello and Pull requests 
+
+Here is an outline of our workflow.
+
+1. We discuss the card in Trello that you will implement next. We will try at this point
+to resolve confusions about the requirements. This card will then be moved to the "Doing" column
+in Trello.
+
+2. You implement and test the feature. Asking questions during this step may be useful.
+
+3. When you think the feature is done, move the Trello card to the "Review" column, and open a
+Pull Request. A Pull Request is a GitHub feature that will allow for me to see and comment on your
+changes.
+
+4. I will give comments on the things that need to be improved, both in code style and in defects
+discovered. You will need to fix these issues and push them to your pull request branch.
+
+5. When I am satisfied, I will merge your code, and the card is moved to done.
