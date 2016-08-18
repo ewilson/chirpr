@@ -1,14 +1,14 @@
-### Chirpr
+## Chirpr
 
 This is the skeleton of a Twitter clone project
 
-#### Fork and clone repo
+### Fork and clone repo
 
 1. Log into GitHub
 1. Click the fork button [here](https://github.com/ewilson/chirpr)
 1. Execute `git clone https://github.com/ewilson/chirpr.git` in the terminal, in the directory you want the project to be.
 
-#### Install dependencies in virtualenvironment
+### Install dependencies in virtualenvironment
 
 Execute the following commands in PowerShell or Bash
 
@@ -17,19 +17,23 @@ Execute the following commands in PowerShell or Bash
 1. `source venv/bin/activate`
 1. `pip3 install -r requirements.txt`
 
-#### Running the application
+### Running the application
 
     $ python chirpr.py
 
 Now navigate to [localhost:5000](http://localhost:5000/) to verify that it is running locally. 
 
-#### DB
+### DB setup
 
 To set up the test database, run
 
     $ ./init_db.py
 
-#### DB Migrations
+To set up an empty database, without example data, run
+
+    $ ./init_db.py new
+
+### DB Migrations
 
 When you need to make changes to the DB structure -- suppose you add a column to a table --
 you will need to add a migration script to `data/migrations`. This scripts should follow a naming
@@ -43,7 +47,7 @@ the test database into the structure that your changes require.
 
 It will be common for changes to the application to require changes to the database structure.
 
-#### Trello and Pull requests 
+### Trello and Pull requests 
 
 Here is an outline of our workflow.
 
@@ -60,4 +64,5 @@ changes.
 4. I will give comments on the things that need to be improved, both in code style and in defects
 discovered. You will need to fix these issues and push them to your pull request branch.
 
-5. When I am satisfied, I will merge your code, and the card is moved to done.
+5. When I am satisfied that the feature is complete, I will merge your code, and the card is moved to done.
+We now return to step 1.
