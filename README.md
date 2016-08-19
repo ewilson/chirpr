@@ -1,14 +1,21 @@
-## Chirpr
+# Chirpr
 
-This is the skeleton of a Twitter clone project
+This is the skeleton of a Twitter clone project.
 
-### Fork and clone repo
+## Install Python 3 and Sqlite3
+
+Get Python3, pip, and Sqlite3 installed on your machine, and on the path. Virtualenv is optional. You will also need git.
+
+Some of these instructions have not been tested on Windows. You may have a better experience if you use Git Bash
+instead of CMD.
+
+## Fork and clone repo
 
 1. Log into GitHub
 1. Click the fork button [here](https://github.com/ewilson/chirpr)
 1. Execute `git clone https://github.com/ewilson/chirpr.git` in the terminal, in the directory you want the project to be.
 
-### Install dependencies in virtualenvironment
+## Install dependencies in virtualenvironment
 
 Execute the following commands in PowerShell or Bash
 
@@ -17,13 +24,13 @@ Execute the following commands in PowerShell or Bash
 1. `source venv/bin/activate`
 1. `pip3 install -r requirements.txt`
 
-### Running the application
+## Running the application
 
     $ python chirpr.py
 
 Now navigate to [localhost:5000](http://localhost:5000/) to verify that it is running locally. 
 
-### DB setup
+## DB setup
 
 To set up the test database, run
 
@@ -33,7 +40,7 @@ To set up an empty database, without example data, run
 
     $ ./init_db.py new
 
-### DB Migrations
+## DB Migrations
 
 When you need to make changes to the DB structure -- suppose you add a column to a table --
 you will need to add a migration script to `data/migrations`. This scripts should follow a naming
@@ -47,7 +54,7 @@ the test database into the structure that your changes require.
 
 It will be common for changes to the application to require changes to the database structure.
 
-### Trello and Pull requests 
+## Trello and Pull requests 
 
 Here is an outline of our workflow.
 
