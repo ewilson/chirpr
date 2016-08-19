@@ -4,7 +4,10 @@ This is the skeleton of a Twitter clone project.
 
 ## Install Python 3 and Sqlite3
 
-Get Python3, pip, and Sqlite3 installed on your machine, and on the path. Virtualenv is optional. You will also need git.
+The project will require Python 3. Please install Python 3.5 and make sure the appropriate version of pip is available
+from the command line. 
+
+Alse Sqlite 3 will be needed.
 
 Some of these instructions have not been tested on Windows. You may have a better experience if you use Git Bash
 instead of CMD.
