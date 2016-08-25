@@ -76,3 +76,10 @@ discovered. You will need to fix these issues and push them to your pull request
 
 5. When I am satisfied that the feature is complete, I will merge your code, and the card is moved to done.
 We now return to step 1.
+
+## Useful documentation
+
+- [Flask](http://flask.pocoo.org/docs/0.11/)
+- [Jinja2](http://jinja.pocoo.org/docs/dev/)
+- [Sqlite](https://sqlite.org/docs.html)
+- [Python DB-API interface for SQLite](https://docs.python.org/3/library/sqlite3.html)
