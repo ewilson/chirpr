@@ -3,13 +3,11 @@ from flask import Flask, request, g, render_template, redirect, url_for
 import db_access
 
 app = Flask(__name__)
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
+    
+    
 @app.route('/admin/users')
 def users():
     user_list = db_access.get_all_users()
@@ -39,7 +37,6 @@ def chirps():
 def delete_chirp(chirp_id):
     db_access.delete_chirp(chirp_id)
     return redirect(url_for('chirps'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)

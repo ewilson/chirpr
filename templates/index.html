@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
-  <h2>Skeleton Chirpr</h2>
-  <p>
-    This application doesn't really do anything, or even look that nice.
-    But you'll be able to fix that.
-  </p>
+<div id="#toggle:1">
+    <h1>Create an Account:</h1>
+    <form action="/admin/user/add" method="POST">
+        <label>Username: <input type="text" name="handle"/></label><br/>
+        <input type="submit" value="Submit"><br/>
+    </form>
+</div>
+<script>
+function id(elid){return document.getElementById(elid);}
+</script>
 {% endblock %}
