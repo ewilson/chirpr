@@ -38,5 +38,8 @@ def delete_chirp(chirp_id):
     db_access.delete_chirp(chirp_id)
     return redirect(url_for('chirps'))
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
 if __name__ == '__main__':
     app.run(debug=True)

@@ -4,15 +4,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Chirpr</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='foundation.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='foundation.js') }}"></script>
-    <script src="{{ url_for('static', filename='what-input.js') }}"></script>
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <h1>Chirpr</h1>
-    {% block body %}{% endblock %}
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"> Canary</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="{% if request.path == '/' %}active{%endif%}"><a href="/">Home</a></li>
+      <li class="{% if request.path == '/sign_up' %}active{%endif%}"><a href="/sign_up">Sign-Up</a></li>
+      <li class="{% if request.path == '/log_in' %}active{%endif%}"><a href="/log_in">Log-In</a></li>
+      <li class="{% if request.path == '/chirp' %}active{%endif%}"><a href="/chirp">Chirp</a></li>
+    </ul>
+  </div>
+</nav>
+  
+<div class="container">
+  {% block body %}{% endblock %}
+</div>
 </body>
 </html>
