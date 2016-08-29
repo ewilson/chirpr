@@ -1,15 +1,20 @@
 import sqlite3
-import uuid
+import uuid, datetime
 from flask import app, g
 
 from chirpr import app
 
 def add_chirp(text):
     conn = get_db()
+    num = -1
+    for c in conn.execute('SELECT id FROM chirp'):
+        num = c[0]
+    num += 1
     conn.execute('''
-        INSERT INTO chirp VALUES (?,?,?)
-    ''', (str(uuid.uuid4()), text, ))
+        INSERT INTO chirp VALUES (?,?,?,?)
+    ''', (num, text, 1, str(datetime.datetime.utcnow())))
     conn.commit()
+    return num
     #c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id
 
 

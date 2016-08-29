@@ -5,11 +5,16 @@ body {
     margin: 20px;
 }
 
-table, th, td {
+table, th, td{
     border: 1px solid darkblue;
-    padding: 5px;
+    padding: 5px; 
 }
-
 table {
     border-collapse: collapse;
+}
+right{
+    float:right;
+}
+left{
+    float:left;
 }

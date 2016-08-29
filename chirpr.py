@@ -32,14 +32,30 @@ def chirps():
     chirp_list = db_access.get_all_chirps()
     return render_template('admin/chirps.html', chirps=chirp_list)
 
-
+@app.route('/chirp', methods=['GET', 'POST'])
+def chirp():
+    if request.method == 'POST':
+        ID = db_access.add_chirp(request.form["content"])
+    chirp_list = db_access.get_all_chirps()
+    return render_template('chirp.html', chirps=chirp_list)
 @app.route('/admin/chirp/delete/<chirp_id>')
 def delete_chirp(chirp_id):
     db_access.delete_chirp(chirp_id)
     return redirect(url_for('chirps'))
 
+
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("404.html"), 404
+    try:
+        temp = list(request.path)
+        del temp[0]
+        temp = ''.join(temp) + '.html'
+        if temp not in ['base.html', 'index.html', 'chirp.html']:
+            text = render_template(temp)
+        else:
+            kill()
+    except:
+        text = render_template("404.html")
+    return text
 if __name__ == '__main__':
     app.run(debug=True)

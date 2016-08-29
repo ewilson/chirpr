@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Create an Account:</h1>
+<form action="/admin/user/add" method="POST">
+    <label>Username: </label><input type="text" name="handle" class="form-control"/><br/>
+    <label>Password: </label><input type="password" name="password" class="form-control"/><br/>
+    <input type="submit" class="btn btn-block btn-warning" value="Submit"><br/>
+</form>
+<script>
+function id(elid){return document.getElementById(elid);}
+</script>
+{% endblock %}
