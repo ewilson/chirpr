@@ -20,7 +20,7 @@ def users():
 def delete_user(user_id):
     db_access.delete_user(user_id)
     return redirect(url_for('users'))
-
+ 
 
 @app.route('/user/add', methods=['POST'])
 def add_user():
