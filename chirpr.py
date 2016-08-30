@@ -1,10 +1,12 @@
-from flask import Flask, request, g, render_template, redirect, url_for
+from flask import Flask, request, g, render_template, redirect, url_for, session
 
 import db_access
 
 app = Flask(__name__)
 @app.route('/')
 def index():
+    if 'user' in session:
+        return redirect(url_for('chirp'))
     return render_template('index.html')
     
     
@@ -20,11 +22,40 @@ def delete_user(user_id):
     return redirect(url_for('users'))
 
 
-@app.route('/admin/user/add', methods=['POST'])
+@app.route('/user/add', methods=['POST'])
 def add_user():
     handle = request.form.get('handle')
-    db_access.add_user(handle)
+    password = request.form.get('password')
+    data = db_access.add_user(handle, password)
+    if data != None:
+        return redirect(url_for('account', success='0'))
+    tup = db_access.sign_in(handle, password)
+    if tup[0] == True:
+        session['user'] = tup[1]
     return redirect(url_for('users'))
+  
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
+ 
+ 
+@app.route('/user/login', methods=['POST'])
+def login():
+    handle = request.form.get('handle')
+    password = request.form.get('password')
+    db_access.add_user(handle, password)
+    tup = db_access.sign_in(handle, password)
+    if tup[0] == True:
+        session['user'] = tup[1]
+        return redirect(url_for('chirp'))
+    return redirect(url_for('account', success='0'))
+    
+    
+@app.route('/user/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/admin/chirps')
@@ -32,17 +63,24 @@ def chirps():
     chirp_list = db_access.get_all_chirps()
     return render_template('admin/chirps.html', chirps=chirp_list)
 
+
 @app.route('/chirp', methods=['GET', 'POST'])
 def chirp():
-    if request.method == 'POST':
-        ID = db_access.add_chirp(request.form["content"])
-    chirp_list = db_access.get_all_chirps()
-    return render_template('chirp.html', chirps=chirp_list)
-@app.route('/admin/chirp/delete/<chirp_id>')
+    if 'user' in session:
+        if request.method == 'POST':
+            ID = db_access.add_chirp(request.form["content"], session['user'])
+        chirp_list = db_access.get_all_chirps()
+        return render_template('chirp.html', chirps=chirp_list, name=db_access.user_for(session['user']))
+    return redirect(url_for('index'))
+    
+    
+@app.route('/chirp/delete/<chirp_id>')
 def delete_chirp(chirp_id):
-    db_access.delete_chirp(chirp_id)
-    return redirect(url_for('chirps'))
-
+    if 'user' in session:
+        db_access.delete_chirp(chirp_id, session['user'])
+        return redirect(url_for('chirp'))
+    return redirect(url_for('index'))
+    
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -57,5 +95,6 @@ def page_not_found(error):
     except:
         text = render_template("404.html")
     return text
+app.secret_key = open('SECRET_KEY~', 'r').read().replace('\n', '')
 if __name__ == '__main__':
     app.run(debug=True)

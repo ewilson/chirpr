@@ -22,7 +22,7 @@
     <form action="/search" method="POST">
     <ul style="" class="nav navbar-nav navbar-right">
         <li><input name='q' type="text" style="margin:7px;" class="form-control" placeholder="Search Canary..."/></li>   
-        <li class="{% if request.path == '/account' %}active{%endif%}"><a href="/account">Sign-Up or Log-In</a></li>
+        <li class="{% if request.path == '/account' %}active{%endif%}">{% if 'user' in session %}<a href='/user/logout'>Log-Out</a>{% else %}<a href="/account">Sign-Up or Log-In</a>{% endif %}</li>
     </ul>
     </form>
   </div>
