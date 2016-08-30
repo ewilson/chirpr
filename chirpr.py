@@ -28,7 +28,7 @@ def add_user():
     password = request.form.get('password')
     data = db_access.add_user(handle, password)
     if data != None:
-        return redirect(url_for('account', success='0'))
+        return redirect(url_for('account', success='create0'))
     tup = db_access.sign_in(handle, password)
     if tup[0] == True:
         session['user'] = tup[1]
@@ -48,14 +48,15 @@ def login():
     tup = db_access.sign_in(handle, password)
     if tup[0] == True:
         session['user'] = tup[1]
+        session['name'] = db_access.user_for(tup[1])
         return redirect(url_for('chirp'))
-    return redirect(url_for('account', success='0'))
+    return redirect(url_for('account', success='login0'))
     
     
 @app.route('/user/logout')
 def logout():
     session.pop('user', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('account'))
 
 
 @app.route('/admin/chirps')
