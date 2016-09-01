@@ -39,12 +39,17 @@ def add_user():
 def account():
     return render_template('account.html')
  
- 
+
+@app.route('/user/following')
+def following():
+    return render_template('following.html')
+
+
 @app.route('/user/login', methods=['POST'])
 def login():
     handle = request.form.get('handle')
     password = request.form.get('password')
-    db_access.add_user(handle, password)
+    #db_access.add_user(handle, password)
     tup = db_access.sign_in(handle, password)
     if tup[0] == True:
         session['user'] = tup[1]
@@ -68,9 +73,10 @@ def chirps():
 @app.route('/chirp', methods=['GET', 'POST'])
 def chirp():
     if 'user' in session:
+        user = session['user']
         if request.method == 'POST':
-            ID = db_access.add_chirp(request.form["content"], session['user'])
-        chirp_list = db_access.get_all_chirps()
+            ID = db_access.add_chirp(request.form["content"],user)
+        chirp_list = db_access.get_all_chirps(user)
         return render_template('chirp.html', chirps=chirp_list, name=db_access.user_for(session['user']))
     return redirect(url_for('index'))
     

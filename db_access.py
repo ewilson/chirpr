@@ -25,13 +25,50 @@ def add_chirp(text, uID):
     #c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id
 
 
-def get_all_chirps():
+
+def highest(li, other_than=[]):
+    highest = None
+    for a in li:
+        if highest == None or a > highest and a not in other_than:
+            highest = a
+    return highest
+    
+    
+def number_highest(args, num):
+    NOT = []
+    n = None
+    for x in range(num):
+        n = highest(args, other_than=NOT)
+        NOT.append(n)
+    return n
+    
+    
+def inOrder(chirps):
+    # get all numbers of posts
+    posts = [c[0] for c in chirps]
+    timechirps = []
+    i2 = 1
+    n = ''
+    while i2 < len(posts):
+        n = number_highest(posts, i2)
+        i = posts.index(n)
+        timechirps.append(chirps[i])
+        i2 += 1
+    return timechirps
+
+
+def get_all_chirps(uid):
     conn = get_db()
-    return conn.execute('''
-        SELECT c.id, c.body, c.datetime, u.handle
-        FROM chirp c, user u
-        WHERE c.user_id = u.id ORDER BY c.datetime
-    ''').fetchall()
+    chirps = []
+    for c in conn.execute('SELECT * from followers WHERE handleid=?', (uid,)):
+        for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id AND c.user_id = ?', (c[1],)):
+            chirps.append(text)
+    return inOrder(chirps)
+    #conn.execute('''
+        #SELECT c.id, c.body, c.datetime, u.handle
+        #FROM chirp c, user u, followers f
+        #WHERE c.user_id = u.id AND f.followerid = c.user_id AND u.id = f.handleid ORDER BY c.datetime
+    #''').fetchall()
 
 
 def delete_chirp(chirp_id, user_id):
