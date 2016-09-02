@@ -95,7 +95,7 @@ def page_not_found(error):
         temp = list(request.path)
         del temp[0]
         temp = ''.join(temp) + '.html'
-        if temp not in ['base.html', 'index.html', 'chirp.html']:
+        if temp not in ['base.html', 'index.html', 'chirp.html', 'following.html']:
             text = render_template(temp)
         else:
             kill()
