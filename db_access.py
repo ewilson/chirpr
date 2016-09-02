@@ -11,15 +11,6 @@ def hash_ps(text):
     return t
 
 
-def add_chirp(text, uID):
-    conn = get_db()
-    conn.execute('''
-        INSERT INTO chirp (body, user_id, datetime) VALUES (?,?,?)
-    ''', (text, uID, str(datetime.datetime.utcnow())))
-    conn.commit()
-    #c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id
-
-
 def get_all_chirps(uid):
     conn = get_db()
     chirps = []

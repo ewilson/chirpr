@@ -7,20 +7,10 @@
     <label>Password: </label><input type="password" name="password" class="form-control"/><br/>
     <input type="submit" class="btn btn-block btn-warning" value="Submit"><br/>
 </form>
-<h1>Log In:</h1>
-<form action="/user/login" method="POST">
-    <font color='red' id='msg2'></font><br>
-    <label>Username: </label><input type="text" name="handle" class="form-control"/><br/>
-    <label>Password: </label><input type="password" name="password" class="form-control"/><br/>
-    <input type="submit" class="btn btn-block btn-warning" value="Submit"><br/>
-</form>
 <script>
 var state = '{{ request.args.get("success") }}';
 if(state == 'create0'){
     id('msg').innerHTML = 'You cannot create an account with this username.';
-}
-else if(state == 'login0'){
-    id('msg2').innerHTML = 'You cannot Sign-In with these cridentials.';
 }
 </script>
 {% endblock %}
