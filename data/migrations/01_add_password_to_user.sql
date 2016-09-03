@@ -1,0 +1,2 @@
+ALTER TABLE user ADD COLUMN password TEXT;
+UPDATE user SET password = 'd63dc919e201d7bc4c825630d2cf25fdc93d4b2f0d46706d29038d01';
