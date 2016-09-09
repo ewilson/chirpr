@@ -11,7 +11,7 @@ def hash_ps(text):
 def get_all_chirps(uid):
     conn = get_db()
     chirps = []
-    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u, followers f WHERE f.handleid = ? AND c.user_id = u.id AND c.user_id = f.followerid ORDER BY c.id', (uid,)):
+    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u, followers f WHERE c.user_id = u.id ORDER BY c.id'):
         chirps.append(text)
     return reversed(chirps)
 
