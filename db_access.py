@@ -27,12 +27,6 @@ def get_all_users():
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
-def user_for(uid):
-    conn = get_db()
-    for a in conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}):
-        return a[0]
-    return ''
-
 def delete_user(user_id):
     conn = get_db()
     conn.execute('DELETE FROM user WHERE id = :id', {'id': user_id})
