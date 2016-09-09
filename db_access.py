@@ -5,10 +5,7 @@ from flask import app, g
 from chirpr import app
 
 def hash_ps(text):
-    t = hashlib.sha224()
-    t.update(text.encode('utf-8'))
-    t = t.hexdigest()
-    return t
+    return hashlib.sha224(text.encode('utf-8')).hexdigest()
 
 
 def get_all_chirps(uid):
@@ -21,7 +18,7 @@ def get_all_chirps(uid):
 
 def delete_chirp(chirp_id, user_id):
     conn = get_db()
-    conn.execute('DELETE FROM chirp WHERE id = :id AND user_id = :uid', {'id': chirp_id, 'uid':user_id})
+    conn.execute('DELETE FROM chirp WHERE id = :id', {'id': chirp_id})
     conn.commit()
 
 
@@ -45,11 +42,20 @@ def delete_user(user_id):
 def add_user(handle, password):
     password = hash_ps(password)
     conn = get_db()
-    for c in conn.execute('SELECT * FROM user WHERE handle=:handle', {'handle':handle}):
-        return list(c)
     conn.execute('INSERT INTO user (handle, password, admin) values (:handle, :password, :admin)',
                  {'handle': handle, 'password':password, 'admin': 0})
     conn.commit()
+
+
+def create_account(handle, password):
+    conn = get_db()
+    res = conn.execute('SELECT * FROM user WHERE handle=:handle', {'handle':handle})
+    if list(res):
+        state = False
+    else:
+        add_user(handle, password)
+        state = True
+    return state
 
 
 def get_db():
@@ -66,8 +72,7 @@ def connect_db():
 
 def sign_in(handle, password):
     conn = get_db()
-    password = hash_ps(password)
-    for c in conn.execute('SELECT id FROM user WHERE handle=:handle AND password=:password', {'handle':handle, 'password':password}):
+    for c in conn.execute('SELECT id FROM user WHERE handle=:handle AND password=:password', {'handle':handle, 'password':hash_ps(password)}):
         return (True, c[0])
     return (False, -1)
 @app.teardown_appcontext

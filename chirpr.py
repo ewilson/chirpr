@@ -1,4 +1,4 @@
-from flask import Flask, request, g, render_template, redirect, url_for
+from flask import Flask, request, g, render_template, redirect, url_for, flash, session
 
 import db_access
 
@@ -24,9 +24,17 @@ def delete_user(user_id):
 def add_user():
     handle = request.form.get('handle')
     password = request.form.get('password')
-    data = db_access.add_user(handle, password)
-    if data != None:
-        return redirect(url_for('account', success='create0'))
+    data = False
+    error = None
+    if (len(handle) < 20 and len(handle) > 1) == (False):
+        error = 'Username is too %s.' % ('long' if len(handle) > 1 else 'short')
+    elif (len(password) < 20 and len(password) > 4) == (False):
+        error = 'Password is too %s.' % ('long' if len(password) > 1 else 'short')
+    if error is None:
+        data = db_access.create_account(handle, password)
+    if data is False:
+        flash(error, 'account_err')
+        return redirect(url_for('account'))
     return redirect(url_for('users'))
   
 
@@ -43,11 +51,8 @@ def chirps():
     
 @app.route('/chirp/delete/<chirp_id>')
 def delete_chirp(chirp_id):
-    if 'user' in session:
-        db_access.delete_chirp(chirp_id, session['user'])
-        return redirect(url_for('chirp'))
     return redirect(url_for('index'))
     
-
+app.secret_key = open('SECRET_KEY~', 'r').read().replace('\n', '')
 if __name__ == '__main__':
     app.run(debug=True)

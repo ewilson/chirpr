@@ -2,15 +2,16 @@
 {% block body %}
 <h1>Create an Account:</h1>
 <form action="/user/add" method="POST">
-    <font color='red' id='msg'></font><br>
+    {% with errors = get_flashed_messages(category_filter=["account_err"]) %}
+        {% if errors %}
+            {%- for msg in errors %}
+                <font color='red' id='msg'>{{ msg }}</font>
+            {% endfor -%}
+        {% endif %}  
+    {% endwith %}
+    <br/>
     <label>Username: </label><input type="text" name="handle" class="form-control" minlength="1" maxlength="20"/><br/>
     <label>Password: </label><input type="password" name="password" class="form-control" minlength="4" maxlength="20"/><br/>
     <input type="submit" class="btn btn-block btn-warning" value="Submit"><br/>
 </form>
-<script>
-var state = '{{ request.args.get("success") }}';
-if(state == 'create0'){
-    id('msg').innerHTML = 'You cannot create an account with this username.';
-}
-</script>
 {% endblock %}
