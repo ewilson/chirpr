@@ -1,5 +1,5 @@
 from flask import Flask, request, g, render_template, redirect, url_for, flash, session
-
+import os
 import db_access
 
 app = Flask(__name__)
@@ -53,6 +53,6 @@ def chirps():
 def delete_chirp(chirp_id):
     return redirect(url_for('index'))
     
-app.secret_key = open('SECRET_KEY~', 'r').read().replace('\n', '')
+app.secret_key = os.environ['SECRET_KEY']
 if __name__ == '__main__':
     app.run(debug=True)

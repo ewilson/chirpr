@@ -13,6 +13,16 @@
   </script>
 </head>
 <body>
+    {% with errors = get_flashed_messages(category_filter=["account_err"]) %}
+        {% if errors %}
+            {%- for msg in errors %}
+                <div class="alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ msg }}
+                </div>
+            {% endfor -%}
+        {% endif %}  
+    {% endwith %}  
   <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">

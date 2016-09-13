@@ -11,7 +11,7 @@ def hash_ps(text):
 def get_all_chirps(uid):
     conn = get_db()
     chirps = []
-    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u, followers f WHERE c.user_id = u.id ORDER BY c.id'):
+    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id'):
         chirps.append(text)
     return reversed(chirps)
 
@@ -64,11 +64,6 @@ def connect_db():
     return conn
 
 
-def sign_in(handle, password):
-    conn = get_db()
-    for c in conn.execute('SELECT id FROM user WHERE handle=:handle AND password=:password', {'handle':handle, 'password':hash_ps(password)}):
-        return (True, c[0])
-    return (False, -1)
 @app.teardown_appcontext
 def close_db(error):
     if hasattr(g, 'conn'):
