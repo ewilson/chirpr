@@ -26,11 +26,12 @@ def add_user():
     password = request.form.get('password')
     data = False
     error = None
-    if (len(handle) < 20 and len(handle) > 1) == (False):
-        error = 'Username is too %s.' % ('long' if len(handle) > 1 else 'short')
-    elif (len(password) < 20 and len(password) > 4) == (False):
-        error = 'Password is too %s.' % ('long' if len(password) > 1 else 'short')
+    if len(handle) not in range(1,20):
+        error = 'Username is too %s. Sorry for the inconvenience.' % ('long' if len(handle) > 1 else 'short')
+    elif len(password) not in range(4,20):
+        error = 'Your password must be equal to or greater than 4 and less then or equal too 20. (too %s)' % ('long' if len(password) > 1 else 'short')
     if error is None:
+        error = 'Username already exists, not created.'
         data = db_access.create_account(handle, password)
     if data is False:
         flash(error, 'account_err')
