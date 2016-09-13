@@ -1,19 +1,22 @@
 import sqlite3
-
+import datetime, hashlib
 from flask import app, g
 
 from chirpr import app
 
-def get_all_chirps():
+def hash_ps(text):
+    return hashlib.sha224(text.encode('utf-8')).hexdigest()
+
+
+def get_all_chirps(uid):
     conn = get_db()
-    return conn.execute('''
-        SELECT c.id, c.body, c.datetime, u.handle
-        FROM chirp c, user u
-        WHERE c.user_id = u.id
-    ''').fetchall()
+    chirps = []
+    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id'):
+        chirps.append(text)
+    return reversed(chirps)
 
 
-def delete_chirp(chirp_id):
+def delete_chirp(chirp_id, user_id):
     conn = get_db()
     conn.execute('DELETE FROM chirp WHERE id = :id', {'id': chirp_id})
     conn.commit()
@@ -30,11 +33,23 @@ def delete_user(user_id):
     conn.commit()
 
 
-def add_user(handle):
+def add_user(handle, password):
+    password = hash_ps(password)
     conn = get_db()
-    conn.execute('INSERT INTO user (handle, admin) values (:handle, :admin)',
-                 {'handle': handle, 'admin': 0})
+    conn.execute('INSERT INTO user (handle, password, admin) values (:handle, :password, :admin)',
+                 {'handle': handle, 'password':password, 'admin': 0})
     conn.commit()
+
+
+def create_account(handle, password):
+    conn = get_db()
+    res = conn.execute('SELECT * FROM user WHERE handle=:handle', {'handle':handle})
+    if list(res):
+        state = False
+    else:
+        add_user(handle, password)
+        state = True
+    return state
 
 
 def get_db():
