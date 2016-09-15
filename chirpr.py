@@ -34,11 +34,47 @@ def add_user():
         error = 'Username already exists, not created.'
         data = db_access.create_account(handle, password)
     if data is False:
-        flash(error, 'account_err')
+        flash('danger;' + error, 'message')
         return redirect(url_for('account'))
+    login(handle, password) 
     return redirect(url_for('users'))
   
 
+def login(handle, password):
+    login_info = db_access.sign_in(handle, password)
+    if login_info[0] == True:
+        uid = login_info[1] # uid for user id
+        handle = db_access.user_for(uid)
+        session['user'] = uid
+        session['name'] = handle
+        flash('success;Hello %s!'%(handle),'message')
+        return True
+    return False
+    
+    
+@app.route('/user/login', methods=['POST'])
+def login_page():
+    handle = request.form.get('handle')
+    password = request.form.get('password')
+    if login(handle, password) == True:
+        return redirect(url_for('index'))
+    flash('Sorry, these cridentials seem to be invalid. Not Signed-In', 'account_err')
+    return redirect(url_for('account'))
+    
+    
+@app.route('/search', methods=["POST"])
+def search():
+    q = request.form.get('q')
+    res = db_access.getUserLike(q)
+    return render_template('search.html', result=res, qfill=q)
+    
+    
+@app.route('/user/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('account'))
+    
+    
 @app.route('/account')
 def account():
     return render_template('account.html')
