@@ -36,7 +36,7 @@ def add_user():
     if data is False:
         flash('danger;' + error, 'message')
         return redirect(url_for('account'))
-    login(handle, password)
+    login(handle, password) 
     return redirect(url_for('users'))
   
 
