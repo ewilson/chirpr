@@ -27,6 +27,27 @@ def get_all_users():
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
+def user_for(uid):
+    conn = get_db()
+    for a in conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}):
+        return a[0]
+    return ''
+
+
+def getUserLike(like_handle):
+    conn = get_db()
+    like_handle = '%' + like_handle + '%'
+    return list(conn.execute('SELECT * FROM user WHERE handle LIKE :like_handle', {'like_handle':like_handle}))
+   
+    
+def sign_in(handle, password):
+    conn = get_db()
+    password = hash_ps(password)
+    for c in conn.execute('SELECT id FROM user WHERE handle=:handle AND password=:password', {'handle':handle, 'password':password}):
+        return (True, c[0])
+    return (False, -1)
+    
+    
 def delete_user(user_id):
     conn = get_db()
     conn.execute('DELETE FROM user WHERE id = :id', {'id': user_id})
