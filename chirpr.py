@@ -41,10 +41,10 @@ def add_user():
   
 
 def login(handle, password):
-    login_info = db_access.sign_in(handle, password)
-    if login_info[0] == True:
-        uid = login_info[1] # uid for user id
-        handle = db_access.user_for(uid)
+    login_info = db_access.get_user_by_handle_and_password(handle, password)
+    if login_info is not None:
+        uid = login_info[0] # uid for user id
+        handle = db_access.get_user(uid)[0]
         session['user'] = uid
         session['name'] = handle
         flash('success;Hello %s!'%(handle),'message')
@@ -58,15 +58,15 @@ def login_page():
     password = request.form.get('password')
     if login(handle, password) == True:
         return redirect(url_for('index'))
-    flash('Sorry, these cridentials seem to be invalid. Not Signed-In', 'account_err')
+    flash('danger;Sorry, these cridentials seem to be invalid. Not Signed-In', 'message')
     return redirect(url_for('account'))
     
     
 @app.route('/search', methods=["POST"])
 def search():
     q = request.form.get('q')
-    res = db_access.getUserLike(q)
-    return render_template('search.html', result=res, qfill=q)
+    res = db_access.get_users_like(q)
+    return render_template('search.html', result=res, qfill=q, following=[])
     
     
 @app.route('/user/logout')
@@ -92,4 +92,4 @@ def delete_chirp(chirp_id):
     
 app.secret_key = os.environ['SECRET_KEY']
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
