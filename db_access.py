@@ -10,23 +10,37 @@ def hash_ps(text):
 
 def get_all_chirps(uid):
     conn = get_db()
-    chirps = []
-    for text in conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id'):
-        chirps.append(text)
-    return reversed(chirps)
+    return conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id DESC').fetchall()
 
 
 def delete_chirp(chirp_id, user_id):
     conn = get_db()
     conn.execute('DELETE FROM chirp WHERE id = :id', {'id': chirp_id})
     conn.commit()
-
+    
 
 def get_all_users():
     conn = get_db()
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
+def get_user(uid):
+    conn = get_db()
+    return conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+
+
+def get_users_like(like_handle):
+    conn = get_db()
+    like_handle = '%' + like_handle + '%'
+    return list(conn.execute('SELECT * FROM user WHERE handle LIKE :like_handle', {'like_handle':like_handle}))
+   
+    
+def get_user_by_handle_and_password(handle, password):
+    conn = get_db()
+    password = hash_ps(password)
+    return conn.execute('SELECT id FROM user WHERE handle=:handle AND password=:password', {'handle':handle, 'password':password}).fetchone()
+    
+    
 def delete_user(user_id):
     conn = get_db()
     conn.execute('DELETE FROM user WHERE id = :id', {'id': user_id})
