@@ -1,4 +1,4 @@
-from flask import Flask, request, g, render_template, redirect, url_for, flash, session
+from flask import Flask, request, g, render_template, redirect, url_for, flash, session, Response
 import os
 import db_access
 
@@ -65,7 +65,7 @@ def follow():
     following = []
     if 'user' in session:
         following = get_followers()
-    return render_template('follow.html', top_followers=db_access.top_five_most_followers(), following=following, get_user=db_access.get_user)
+    return render_template('follow.html', to_follow=db_access.to_follow(), following=following, get_user=db_access.get_user)
     
 
 def login(handle, password):
@@ -88,6 +88,15 @@ def login_page():
         return redirect(url_for('index'))
     flash('danger;Sorry, these cridentials seem to be invalid. Not Signed-In', 'message')
     return redirect(url_for('account'))
+
+
+@app.route('/user/page/<uid>')
+def user_page(uid):
+    handle = db_access.get_user(uid)[0]
+    following = []
+    if 'user' in session:
+        following = get_followers()
+    return render_template('user_page.html', handle=handle, uid=int(uid), follow_data=db_access.follow_data(uid), following=following, get_user=db_access.get_user)
     
     
 @app.route('/search', methods=["POST"])
@@ -109,8 +118,8 @@ def logout():
 @app.route('/account')
 def account():
     return render_template('account.html')
-
-
+    
+    
 @app.route('/admin/chirps')
 def chirps():
     chirp_list = db_access.get_all_chirps()

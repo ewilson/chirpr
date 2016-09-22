@@ -43,9 +43,28 @@ def followers(uid):
     return conn.execute('SELECT handleid FROM followers WHERE followerid=?', (uid,)).fetchall()
     
 
-def top_five_most_followers():
+def to_follow():
     conn = get_db()
-    return conn.execute('SELECT * FROM followers;').fetchmany(5)
+    followers = {}
+    for i in conn.execute('SELECT handleid, followerid FROM followers').fetchall(): #.fetchmany()
+        hid = i[0]
+        i = 1
+        if hid in followers:
+            i = followers[hid] + i
+        followers[hid] = i
+    return followers 
+
+
+def follow_data(uid):
+    conn = get_db()
+    followers = {'count_followers':0}
+    f = 'count_followers'
+    for i in conn.execute('SELECT handleid, followerid FROM followers WHERE handleid=?', (uid,)): #.fetchmany()
+        i = 1
+        if f in followers:
+            i = followers[f] + i
+        followers[f] = i
+    return followers
 
 
 def get_user(uid):

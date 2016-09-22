@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block body %}
-<h1>Most Followers:</h1>
+<h1>People with Followers:</h1>
     <ol>
-    {% for tf in top_followers %}
+    {% for tf in to_follow %}
         <li>
-            {% if tf.handleid in following %}
-                <a href="/user/page/{{ tf.handleid }}">
-                    {{ get_user(tf.handleid)[0] }}
+            {% if tf in following %}
+                <a href="/user/page/{{ tf }}">
+                    {{ get_user(tf)[0] }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>
             {% else %}
-                <a href="/follow/{{ tf.handleid }}">
-                    {{ get_user(tf.handleid)[0] }}
+                <a href="/follow/{{ tf }}">
+                    {{ get_user(tf)[0] }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             {% endif %}
+            {{ to_follow[tf] }}
         </li>
     {% endfor %}
     </ol>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {% if uid in following %}
+        <a href="#">
+            {{ handle }}
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="glyphicon glyphicon-ok"></span>
+        </a>
+    {% else %}
+        <a href="/follow/{{ uid }}">
+            {{ handle }}
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+    {% endif %}</div>
+  <div class="panel-body">Followed By: {{ follow_data['count_followers'] }}</div>
+</div>
+{% endblock %}
