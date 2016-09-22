@@ -24,9 +24,38 @@ def get_all_users():
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
+def follower_of(uid, fid):
+    conn = get_db()
+    return conn.execute('SELECT * FROM followers WHERE handleid=:uid AND followerid=:fid', {'uid':uid, 'fid':fid}).fetchone()
+
+
+def follow(uid, fid):
+    conn = get_db()
+    if follower_of(uid, fid) is None:
+        conn.execute('INSERT INTO followers VALUES (?,?)', (uid, fid))
+        conn.commit()
+        return True
+    return False
+
+
+def followers(uid):
+    conn = get_db()
+    return conn.execute('SELECT handleid FROM followers WHERE followerid=?', (uid,)).fetchall()
+    
+
+def top_five_most_followers():
+    conn = get_db()
+    return conn.execute('SELECT * FROM followers;').fetchmany(5)
+
+
 def get_user(uid):
     conn = get_db()
     return conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    
+
+def get_id(user):
+    conn = get_db()
+    return conn.execute('SELECT id FROM user WHERE handle=:user', {'user':user}).fetchone()
 
 
 def get_users_like(like_handle):

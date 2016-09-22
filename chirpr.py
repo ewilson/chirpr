@@ -40,6 +40,34 @@ def add_user():
     return redirect(url_for('users'))
   
 
+@app.route('/follow/<uid>')
+def follow_user(uid):
+    if 'user' in session:
+        user = db_access.get_user(uid)[0]
+        message = 'danger;Sorry, you cannot follow %s.' % (user)
+        if db_access.follow(uid, session['user']) == True:
+            message = 'success;You are now following %s' %(user)
+        flash(message)
+        return redirect(url_for('index'))
+    return redirect(url_for('account'))
+  
+
+def get_followers():
+    followers = db_access.followers(session['user'])
+    following = []
+    for f in followers:
+        following.append(f[0])
+    return following
+    
+    
+@app.route('/follow')
+def follow():
+    following = []
+    if 'user' in session:
+        following = get_followers()
+    return render_template('follow.html', top_followers=db_access.top_five_most_followers(), following=following, get_user=db_access.get_user)
+    
+
 def login(handle, password):
     login_info = db_access.get_user_by_handle_and_password(handle, password)
     if login_info is not None:
@@ -66,7 +94,10 @@ def login_page():
 def search():
     q = request.form.get('q')
     res = db_access.get_users_like(q)
-    return render_template('search.html', result=res, qfill=q, following=[])
+    following = []
+    if 'user' in session:
+        following = get_followers()
+    return render_template('search.html', result=res, qfill=q, following=following)
     
     
 @app.route('/user/logout')
