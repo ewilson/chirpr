@@ -26,7 +26,7 @@ def get_all_users():
 
 def follower_of(uid, fid):
     conn = get_db()
-    return conn.execute('SELECT * FROM followers WHERE handleid=:uid AND followerid=:fid', {'uid':uid, 'fid':fid}).fetchone()
+    return conn.execute('SELECT * FROM followers WHERE handle_id=:uid AND follower_id=:fid', {'uid':uid, 'fid':fid}).fetchone()
 
 
 def follow(uid, fid):
@@ -40,13 +40,13 @@ def follow(uid, fid):
 
 def followers(uid):
     conn = get_db()
-    return conn.execute('SELECT handleid FROM followers WHERE followerid=?', (uid,)).fetchall()
+    return conn.execute('SELECT handle_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
     
 
 def to_follow():
     conn = get_db()
     followers = {}
-    for i in conn.execute('SELECT handleid, followerid FROM followers').fetchall(): #.fetchmany()
+    for i in conn.execute('SELECT handle_id, follower_id FROM followers').fetchall():
         hid = i[0]
         i = 1
         if hid in followers:
@@ -59,7 +59,7 @@ def follow_data(uid):
     conn = get_db()
     followers = {'count_followers':0}
     f = 'count_followers'
-    for i in conn.execute('SELECT handleid, followerid FROM followers WHERE handleid=?', (uid,)): #.fetchmany()
+    for i in conn.execute('SELECT handle_id, follower_id FROM followers WHERE handle_id=?', (uid,)):
         i = 1
         if f in followers:
             i = followers[f] + i
@@ -69,7 +69,8 @@ def follow_data(uid):
 
 def get_user(uid):
     conn = get_db()
-    return conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    user = conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    return user[0] if user is not None else None
     
 
 def get_id(user):

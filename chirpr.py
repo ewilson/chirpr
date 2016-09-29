@@ -92,16 +92,20 @@ def login_page():
 
 @app.route('/user/page/<uid>')
 def user_page(uid):
-    handle = db_access.get_user(uid)[0]
+    handle = db_access.get_user(uid)
     following = []
     if 'user' in session:
         following = get_followers()
     return render_template('user_page.html', handle=handle, uid=int(uid), follow_data=db_access.follow_data(uid), following=following, get_user=db_access.get_user)
     
     
-@app.route('/search', methods=["POST"])
+@app.route('/search', methods=["POST", 'GET'])
 def search():
-    q = request.form.get('q')
+    if request.method == 'POST':
+        q = request.form.get('q')   
+    else:
+        q = request.args.get('q')
+        q = '' if not q else q
     res = db_access.get_users_like(q)
     following = []
     if 'user' in session:

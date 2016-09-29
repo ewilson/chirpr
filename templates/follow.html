@@ -6,13 +6,13 @@
         <li>
             {% if tf in following %}
                 <a href="/user/page/{{ tf }}">
-                    {{ get_user(tf)[0] }}
+                    {{ get_user(tf) }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>
             {% else %}
                 <a href="/follow/{{ tf }}">
-                    {{ get_user(tf)[0] }}
+                    {{ get_user(tf) }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
