@@ -1,1 +1,1 @@
-CREATE TABLE followers (handle_id integer, follower_id integer);
+CREATE TABLE followers (leader_id integer, follower_id integer);

@@ -24,15 +24,15 @@ def get_all_users():
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
-def follower_of(uid, fid):
+def follower_of(leader_id, follower_id):
     conn = get_db()
-    return conn.execute('SELECT * FROM followers WHERE handle_id=:uid AND follower_id=:fid', {'uid':uid, 'fid':fid}).fetchone()
+    return conn.execute('SELECT * FROM followers WHERE leader_id=:uid AND follower_id=:fid', {'lid':leader_id, 'fid':follower_id}).fetchone()
 
 
-def follow(uid, fid):
+def follow(leader_id, follower_id):
     conn = get_db()
-    if follower_of(uid, fid) is None:
-        conn.execute('INSERT INTO followers VALUES (?,?)', (uid, fid))
+    if follower_of(leader_id, follower_id) is None:
+        conn.execute('INSERT INTO followers VALUES (?,?)', (leader_id, follower_id))
         conn.commit()
         return True
     return False
@@ -40,13 +40,13 @@ def follow(uid, fid):
 
 def followers(uid):
     conn = get_db()
-    return conn.execute('SELECT handle_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
+    return conn.execute('SELECT leader_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
     
 
 def to_follow():
     conn = get_db()
     followers = {}
-    for i in conn.execute('SELECT handle_id, follower_id FROM followers').fetchall():
+    for i in conn.execute('SELECT leader_id, follower_id FROM followers').fetchall():
         hid = i[0]
         i = 1
         if hid in followers:
@@ -55,11 +55,11 @@ def to_follow():
     return followers 
 
 
-def follow_data(uid):
+def follow_data(leader_id):
     conn = get_db()
     followers = {'count_followers':0}
     f = 'count_followers'
-    for i in conn.execute('SELECT handle_id, follower_id FROM followers WHERE handle_id=?', (uid,)):
+    for i in conn.execute('SELECT leader_id, follower_id FROM followers WHERE leader_id=?', (leader_id,)):
         if f in followers:
             followers[f] += 1
     return followers
@@ -68,7 +68,6 @@ def follow_data(uid):
 def get_user(uid):
     conn = get_db()
     user = conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
-    print(list(user))
     return user[0] if user is not None else None
     
 

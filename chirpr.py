@@ -34,7 +34,7 @@ def add_user():
         error = 'Username already exists, not created.'
         data = db_access.create_account(handle, password)
     if data is False:
-        flash('danger;' + error, 'message')
+        flash(error, 'danger_message')
         return redirect(url_for('account'))
     login(handle, password) 
     return redirect(url_for('users'))
@@ -43,11 +43,11 @@ def add_user():
 @app.route('/follow/<uid>')
 def follow_user(uid):
     if 'user' in session:
-        user = db_access.get_user(uid)[0]
-        message = 'danger;Sorry, you cannot follow %s.' % (user)
+        user = db_access.get_user(uid)
+        message = ('Sorry, you cannot follow %s.' % (user), 'danger_message')
         if db_access.follow(uid, session['user']) == True:
-            message = 'success;You are now following %s' %(user)
-        flash(message)
+            message = ('You are now following %s' %(user), 'success_message')
+        flash(*message)
         return redirect(url_for('index'))
     return redirect(url_for('account'))
   
@@ -61,7 +61,7 @@ def get_followers():
 def follow():
     following = []
     if 'user' in session:
-        following = get_followers() 
+        following = get_followers()
     return render_template('follow.html', to_follow=db_access.to_follow(), following=following, get_user=db_access.get_user)
     
 
@@ -72,7 +72,7 @@ def login(handle, password):
         handle = db_access.get_user(uid)
         session['user'] = uid
         session['name'] = handle
-        flash('success;Hello %s!'%(handle),'message')
+        flash('Hello %s!'%(handle),'success_message')
         return True
     return False
     
@@ -83,7 +83,7 @@ def login_page():
     password = request.form.get('password')
     if login(handle, password) == True:
         return redirect(url_for('index'))
-    flash('danger;Sorry, these cridentials seem to be invalid. Not Signed-In', 'message')
+    flash('Sorry, these cridentials seem to be invalid. Not Signed-In', 'danger_message')
     return redirect(url_for('account'))
 
 
