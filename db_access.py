@@ -68,6 +68,7 @@ def follow_data(uid):
 def get_user(uid):
     conn = get_db()
     user = conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    print(list(user))
     return user[0] if user is not None else None
     
 

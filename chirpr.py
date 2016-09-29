@@ -54,17 +54,14 @@ def follow_user(uid):
 
 def get_followers():
     followers = db_access.followers(session['user'])
-    following = []
-    for f in followers:
-        following.append(f[0])
-    return following
+    return [f[0] for f in followers]
     
     
 @app.route('/follow')
 def follow():
     following = []
     if 'user' in session:
-        following = get_followers()
+        following = get_followers() 
     return render_template('follow.html', to_follow=db_access.to_follow(), following=following, get_user=db_access.get_user)
     
 
@@ -72,7 +69,7 @@ def login(handle, password):
     login_info = db_access.get_user_by_handle_and_password(handle, password)
     if login_info is not None:
         uid = login_info[0] # uid for user id
-        handle = db_access.get_user(uid)[0]
+        handle = db_access.get_user(uid)
         session['user'] = uid
         session['name'] = handle
         flash('success;Hello %s!'%(handle),'message')
@@ -93,10 +90,10 @@ def login_page():
 @app.route('/user/page/<uid>')
 def user_page(uid):
     handle = db_access.get_user(uid)
-    following = []
+    my_followers = []
     if 'user' in session:
-        following = get_followers()
-    return render_template('user_page.html', handle=handle, uid=int(uid), follow_data=db_access.follow_data(uid), following=following, get_user=db_access.get_user)
+        my_followers = get_followers()
+    return render_template('user_page.html', handle=handle, uid=int(uid), follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user)
     
     
 @app.route('/search', methods=["POST", 'GET'])
@@ -107,10 +104,10 @@ def search():
         q = request.args.get('q')
         q = '' if not q else q
     res = db_access.get_users_like(q)
-    following = []
+    my_followers = []
     if 'user' in session:
-        following = get_followers()
-    return render_template('search.html', result=res, qfill=q, following=following)
+        my_followers = get_followers()
+    return render_template('search.html', result=res, qfill=q, my_followers=my_followers)
     
     
 @app.route('/user/logout')

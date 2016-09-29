@@ -14,7 +14,7 @@
           <div id="collapse{{ r.handle }}" class="panel-collapse collapse">
             {% if 'user' in session %}
                 <div class="panel-body">
-                    {% if r.id in following %}
+                    {% if r.id in my_followers %}
                         <a href="/user/page/{{ r.id }}">
                             <span class="glyphicon glyphicon-user"></span>
                             <span class="glyphicon glyphicon-ok"></span>
