@@ -60,10 +60,8 @@ def follow_data(uid):
     followers = {'count_followers':0}
     f = 'count_followers'
     for i in conn.execute('SELECT handle_id, follower_id FROM followers WHERE handle_id=?', (uid,)):
-        i = 1
         if f in followers:
-            i = followers[f] + i
-        followers[f] = i
+            followers[f] += 1
     return followers
 
 
