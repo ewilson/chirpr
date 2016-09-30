@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {% if handle != None %}
+        {% if uid in my_followers %}
+            <a href="#">
+                {{ handle }}
+                <span class="glyphicon glyphicon-user"></span>
+                <span class="glyphicon glyphicon-ok"></span>
+            </a>
+        {% else %}
+            <a href="/follow/{{ uid }}">
+                {{ handle }}
+                <span class="glyphicon glyphicon-user"></span>
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        {% endif %}
+        </div>
+      <div class="panel-body">Followed By: {{ follow_data['count_followers'] }}</div>
+  {% else %}
+    <center><font color='red'>This user doesn't exist.</font></center>
+  {% endif %}
+</div>
+{% endblock %}

@@ -13,16 +13,36 @@
   </script>
 </head>
 <body>
-    {% with errors = get_flashed_messages(category_filter=["message"]) %}
+    {% with errors = get_flashed_messages(category_filter=["danger_message"]) %}
         {% if errors %}
             {%- for msg in errors %}
-                <div class="alert alert-{{ msg.split(';', 1)[0] }}">
+                <div class="alert alert-danger">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    {{ msg.split(';', 1)[1] }}
+                    {{ msg }}
                 </div>
             {% endfor -%}
         {% endif %}  
     {% endwith %}  
+    {% with errors = get_flashed_messages(category_filter=["success_message"]) %}
+        {% if errors %}
+            {%- for msg in errors %}
+                <div class="alert alert-success">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ msg }}
+                </div>
+            {% endfor -%}
+        {% endif %}  
+    {% endwith %} 
+    {% with errors = get_flashed_messages(category_filter=["warning_message"]) %}
+        {% if errors %}
+            {%- for msg in errors %}
+                <div class="alert alert-warning">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ msg }}
+                </div>
+            {% endfor -%}
+        {% endif %}  
+    {% endwith %} 
   <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -30,6 +50,7 @@
     </div>
     <ul class="nav navbar-nav">
       <li class="{% if request.path == '/' %}active{%endif%}"><a href="/">Home</a></li>
+      <li class="{% if request.path == '/search' %}active{%endif%}"><a href="/search">Follow</a></li>
     </ul>
     <form action="/search" method="POST">
     <ul style="" class="nav navbar-nav navbar-right">

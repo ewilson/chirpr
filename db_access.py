@@ -24,9 +24,45 @@ def get_all_users():
     return conn.execute('SELECT id, handle, admin FROM user').fetchall()
 
 
+def follower_of(leader_id, follower_id):
+    conn = get_db()
+    return conn.execute('SELECT * FROM followers WHERE leader_id=:lid AND follower_id=:fid', {'lid':leader_id, 'fid':follower_id}).fetchone()
+
+
+def follow(leader_id, follower_id):
+    conn = get_db()
+    if follower_of(leader_id, follower_id) is None:
+        conn.execute('INSERT INTO followers VALUES (?,?)', (leader_id, follower_id))
+        conn.commit()
+        return True
+    return False
+
+
+def followers(uid):
+    conn = get_db()
+    return conn.execute('SELECT leader_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
+
+
+def follow_data(leader_id):
+    conn = get_db()
+    followers = {'count_followers':0}
+    f = 'count_followers'
+    for i in conn.execute('SELECT leader_id, follower_id FROM followers WHERE leader_id=?', (leader_id,)):
+        if f in followers:
+            followers[f] += 1
+    return followers
+
+
 def get_user(uid):
     conn = get_db()
-    return conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    user = conn.execute('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    return user[0] if user is not None else None
+    
+
+def get_id(user):
+    conn = get_db()
+    ID = conn.execute('SELECT id FROM user WHERE handle=:user', {'user':user}).fetchone()
+    return ID[0] if ID is not None else None
 
 
 def get_users_like(like_handle):

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>People with Followers:</h1>
+    <ol>
+    {% for tf in to_follow %}
+        <li>
+            {% if tf[0] in following %}
+                <a href="/user/page/{{ tf }}">
+                    {{ tf[1] }}
+                    <span class="glyphicon glyphicon-user"></span>
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            {% else %}
+                <a href="/follow/{{ tf }}">
+                    {{ tf[1] }}
+                    <span class="glyphicon glyphicon-user"></span>
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            {% endif %}
+            {{ tf[2] }}
+        </li>
+    {% endfor %}
+    </ol>
+{% endblock %}

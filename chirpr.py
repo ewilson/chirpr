@@ -1,4 +1,4 @@
-from flask import Flask, request, g, render_template, redirect, url_for, flash, session
+from flask import Flask, request, g, render_template, redirect, url_for, flash, session, Response
 import os
 import db_access
 
@@ -34,20 +34,37 @@ def add_user():
         error = 'Username already exists, not created.'
         data = db_access.create_account(handle, password)
     if data is False:
-        flash('danger;' + error, 'message')
+        flash(error, 'danger_message')
         return redirect(url_for('account'))
     login(handle, password) 
     return redirect(url_for('users'))
   
 
+@app.route('/follow/<uid>')
+def follow_user(uid):
+    if 'user' in session:
+        user = db_access.get_user(uid)
+        message = ('Sorry, you cannot follow %s.' % (user), 'danger_message')
+        if db_access.follow(uid, session['user']) == True:
+            message = ('You are now following %s' %(user), 'success_message')
+        flash(*message)
+        return redirect(url_for('index'))
+    return redirect(url_for('account'))
+  
+
+def get_followers():
+    followers = db_access.followers(session['user'])
+    return [f[0] for f in followers]
+    
+
 def login(handle, password):
     login_info = db_access.get_user_by_handle_and_password(handle, password)
     if login_info is not None:
         uid = login_info[0] # uid for user id
-        handle = db_access.get_user(uid)[0]
+        handle = db_access.get_user(uid)
         session['user'] = uid
         session['name'] = handle
-        flash('success;Hello %s!'%(handle),'message')
+        flash('Hello %s!'%(handle),'success_message')
         return True
     return False
     
@@ -58,15 +75,31 @@ def login_page():
     password = request.form.get('password')
     if login(handle, password) == True:
         return redirect(url_for('index'))
-    flash('danger;Sorry, these cridentials seem to be invalid. Not Signed-In', 'message')
+    flash('Sorry, these cridentials seem to be invalid. Not Signed-In', 'danger_message')
     return redirect(url_for('account'))
+
+
+@app.route('/user/page/<handle>')
+def user_page(handle):
+    uid = db_access.get_id(handle)
+    my_followers = []
+    if 'user' in session:
+        my_followers = get_followers()
+    return render_template('user_page.html', handle=handle, uid=uid, follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user)
     
     
-@app.route('/search', methods=["POST"])
+@app.route('/search', methods=["POST", 'GET'])
 def search():
-    q = request.form.get('q')
+    if request.method == 'POST':
+        q = request.form.get('q')   
+    else:
+        q = request.args.get('q')
+        q = '' if not q else q
     res = db_access.get_users_like(q)
-    return render_template('search.html', result=res, qfill=q, following=[])
+    my_followers = []
+    if 'user' in session:
+        my_followers = get_followers()
+    return render_template('search.html', result=res, qfill=q, my_followers=my_followers)
     
     
 @app.route('/user/logout')
@@ -78,8 +111,8 @@ def logout():
 @app.route('/account')
 def account():
     return render_template('account.html')
-
-
+    
+    
 @app.route('/admin/chirps')
 def chirps():
     chirp_list = db_access.get_all_chirps()
