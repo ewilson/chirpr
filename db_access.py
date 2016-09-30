@@ -26,7 +26,7 @@ def get_all_users():
 
 def follower_of(leader_id, follower_id):
     conn = get_db()
-    return conn.execute('SELECT * FROM followers WHERE leader_id=:uid AND follower_id=:fid', {'lid':leader_id, 'fid':follower_id}).fetchone()
+    return conn.execute('SELECT * FROM followers WHERE leader_id=:lid AND follower_id=:fid', {'lid':leader_id, 'fid':follower_id}).fetchone()
 
 
 def follow(leader_id, follower_id):
@@ -41,18 +41,6 @@ def follow(leader_id, follower_id):
 def followers(uid):
     conn = get_db()
     return conn.execute('SELECT leader_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
-    
-
-def to_follow():
-    conn = get_db()
-    followers = {}
-    for i in conn.execute('SELECT leader_id, follower_id FROM followers').fetchall():
-        hid = i[0]
-        i = 1
-        if hid in followers:
-            i = followers[hid] + i
-        followers[hid] = i
-    return followers 
 
 
 def follow_data(leader_id):
@@ -73,7 +61,8 @@ def get_user(uid):
 
 def get_id(user):
     conn = get_db()
-    return conn.execute('SELECT id FROM user WHERE handle=:user', {'user':user}).fetchone()
+    ID = conn.execute('SELECT id FROM user WHERE handle=:user', {'user':user}).fetchone()
+    return ID[0] if ID is not None else None
 
 
 def get_users_like(like_handle):

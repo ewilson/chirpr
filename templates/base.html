@@ -50,7 +50,7 @@
     </div>
     <ul class="nav navbar-nav">
       <li class="{% if request.path == '/' %}active{%endif%}"><a href="/">Home</a></li>
-      <li class="{% if request.path in ['/follow', '/search'] %}active{%endif%}"><a href="/search">Follow</a></li>
+      <li class="{% if request.path == '/search' %}active{%endif%}"><a href="/search">Follow</a></li>
     </ul>
     <form action="/search" method="POST">
     <ul style="" class="nav navbar-nav navbar-right">

@@ -4,20 +4,20 @@
     <ol>
     {% for tf in to_follow %}
         <li>
-            {% if tf in following %}
+            {% if tf[0] in following %}
                 <a href="/user/page/{{ tf }}">
-                    {{ get_user(tf) }}
+                    {{ tf[1] }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>
             {% else %}
                 <a href="/follow/{{ tf }}">
-                    {{ get_user(tf) }}
+                    {{ tf[1] }}
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             {% endif %}
-            {{ to_follow[tf] }}
+            {{ tf[2] }}
         </li>
     {% endfor %}
     </ol>

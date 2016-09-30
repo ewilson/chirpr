@@ -56,14 +56,6 @@ def get_followers():
     followers = db_access.followers(session['user'])
     return [f[0] for f in followers]
     
-    
-@app.route('/follow')
-def follow():
-    following = []
-    if 'user' in session:
-        following = get_followers()
-    return render_template('follow.html', to_follow=db_access.to_follow(), following=following, get_user=db_access.get_user)
-    
 
 def login(handle, password):
     login_info = db_access.get_user_by_handle_and_password(handle, password)
@@ -87,13 +79,13 @@ def login_page():
     return redirect(url_for('account'))
 
 
-@app.route('/user/page/<uid>')
-def user_page(uid):
-    handle = db_access.get_user(uid)
+@app.route('/user/page/<handle>')
+def user_page(handle):
+    uid = db_access.get_id(handle)
     my_followers = []
     if 'user' in session:
         my_followers = get_followers()
-    return render_template('user_page.html', handle=handle, uid=int(uid), follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user)
+    return render_template('user_page.html', handle=handle, uid=uid, follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user)
     
     
 @app.route('/search', methods=["POST", 'GET'])
