@@ -8,14 +8,34 @@ def hash_ps(text):
     return hashlib.sha224(text.encode('utf-8')).hexdigest()
 
 
+def add_chirp(text, uID, MD=False):
+    conn = get_db()
+    if MD == False or '<script' in text:
+        text = text.replace('<', '&lt;') # to stop script tags
+    conn.execute('''
+        INSERT INTO chirp (body, user_id, datetime) VALUES (?,?,?)
+    ''', (text, uID, str(datetime.datetime.utcnow())))
+    conn.commit()
+
+
 def get_all_chirps(uid):
     conn = get_db()
-    return conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id DESC').fetchall()
+    return conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u, followers f WHERE f.follower_id = ? AND c.user_id = u.id AND c.user_id = f.leader_id ORDER BY c.id DESC', (uid,)).fetchall()
+
+
+def get_chirps(uid):
+    conn = get_db()
+    return conn.execute('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id ORDER BY c.id DESC', (uid,)).fetchall()
 
 
 def delete_chirp(chirp_id, user_id):
     conn = get_db()
-    conn.execute('DELETE FROM chirp WHERE id = :id', {'id': chirp_id})
+    conn.execute('DELETE FROM chirp WHERE id = :id AND user_id = :uid', {'id': chirp_id, 'uid':user_id})
+    conn.commit()
+
+def delete_chirp(chirp_id, user_id):
+    conn = get_db()
+    conn.execute('DELETE FROM chirp WHERE id=:id AND user_id=:user_id', {'id': chirp_id, 'user_id':user_id})
     conn.commit()
     
 

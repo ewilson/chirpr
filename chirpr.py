@@ -1,6 +1,7 @@
 from flask import Flask, request, g, render_template, redirect, url_for, flash, session, Response
 import os
 import db_access
+import markdown2
 
 app = Flask(__name__)
 @app.route('/')
@@ -48,7 +49,7 @@ def follow_user(uid):
         if db_access.follow(uid, session['user']) == True:
             message = ('You are now following %s' %(user), 'success_message')
         flash(*message)
-        return redirect(url_for('index'))
+        return redirect(url_for('user_page', handle=user))
     return redirect(url_for('account'))
   
 
@@ -83,9 +84,14 @@ def login_page():
 def user_page(handle):
     uid = db_access.get_id(handle)
     my_followers = []
+    name = "Stranger"
+    chirp_list = []
     if 'user' in session:
         my_followers = get_followers()
-    return render_template('user_page.html', handle=handle, uid=uid, follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user)
+        user = session['user']
+        name = db_access.get_user(user)
+        chirp_list = db_access.get_all_chirps(user)
+    return render_template('user_page.html', handle=handle, uid=uid, follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user,chirps=chirp_list, name=name)
     
     
 @app.route('/search', methods=["POST", 'GET'])
@@ -119,9 +125,28 @@ def chirps():
     return render_template('admin/chirps.html', chirps=chirp_list)
     
     
+@app.route('/chirp', methods=['GET', 'POST'])
+def chirp():
+    if 'user' in session:
+        user = session['user']
+        MD = False
+        if request.method == 'POST':
+            content = request.form["content"]
+            if 'MD' in request.form:
+                if request.form['MD'] == 'on':
+                    content = markdown2.markdown(content)
+                    MD = True
+            db_access.add_chirp(content,user,MD=MD)
+        chirp_list = db_access.get_all_chirps(user)
+        return render_template('chirp.html', chirps=chirp_list, name=db_access.get_user(session['user']))
+    return redirect(url_for('index'))
+    
+    
 @app.route('/chirp/delete/<chirp_id>')
 def delete_chirp(chirp_id):
-    return redirect(url_for('index'))
+    if 'user' in session:
+        db_access.delete_chirp(chirp_id, session['user'])
+    return redirect(url_for('chirp'))
     
 app.secret_key = os.environ['SECRET_KEY']
 if __name__ == '__main__':
