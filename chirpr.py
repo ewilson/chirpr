@@ -6,6 +6,8 @@ import markdown2
 app = Flask(__name__)
 @app.route('/')
 def index():
+    if 'user' in session:
+        return redirect(url_for('chirp'))
     return render_template('index.html')
     
     
@@ -90,7 +92,8 @@ def user_page(handle):
         my_followers = get_followers()
         user = session['user']
         name = db_access.get_user(user)
-        chirp_list = db_access.get_all_chirps(user)
+        if db_access.follower_of(uid, user):
+            chirp_list = db_access.get_chirps(uid)
     return render_template('user_page.html', handle=handle, uid=uid, follow_data=db_access.follow_data(uid), my_followers=my_followers, get_user=db_access.get_user,chirps=chirp_list, name=name)
     
     
@@ -125,6 +128,12 @@ def chirps():
     return render_template('admin/chirps.html', chirps=chirp_list)
     
     
+@app.route('/chirps/<handle>')
+def chirps_hn(handle):
+    uid = db_access.get_id(handle)
+    return redirect('%s?filter=%s'%(url_for('chirp'), handle))
+
+    
 @app.route('/chirp', methods=['GET', 'POST'])
 def chirp():
     if 'user' in session:
@@ -137,7 +146,10 @@ def chirp():
                     content = markdown2.markdown(content)
                     MD = True
             db_access.add_chirp(content,user,MD=MD)
-        chirp_list = db_access.get_all_chirps(user)
+        if 'filter' in request.args:
+            chirp_list = db_access.get_chirps(db_access.get_id(request.args.get('filter')))
+        else:
+            chirp_list = db_access.get_all_chirps(user)
         return render_template('chirp.html', chirps=chirp_list, name=db_access.get_user(session['user']))
     return redirect(url_for('index'))
     
