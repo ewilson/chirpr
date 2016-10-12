@@ -18,7 +18,7 @@
     {% for chirp in chirps %}
       <div class="panel panel-warning" id="{{ chirp.id }}">
         <div class="panel-heading" id="{{ chirp.id }}_heading"><left>@{{ chirp.handle }}</left><right>{{ chirp.datetime.split('.')[0] }}</right></div>
-        <div class="panel-body" id="{{ chirp.id }}_body">{% autoescape false %}{{ markdown(chirp.body) }}{% endautoescape %}</div>
+        <div class="panel-body" id="{{ chirp.id }}_body">{% if '<script' in chirp.body %}{{ chirp.body }}{%else%}{% autoescape false %}{{ markdown(chirp.body) }}{% endautoescape %}{%endif%}</div>
         <div class="panel-footer" id="{{ chirp.id }}_footer">{% if name == chirp.handle %}<right><a href="{{url_for('delete_chirp', chirp_id=chirp.id)}}">Delete</a></right>{% endif %}</div>
       </div>
     {% endfor %}
