@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block body %} 
-<div class="panel panel-success" style="width:100%;">
-    <div class='panel-body'>
-        <form action="/chirp" method="POST">
-            <textarea id="chirp_content" name="content" class="form-control" placeholder="What's on your mind?"></textarea>
-            <label>Use Markdown <input type="checkbox" name="MD"/></label><br/>
-            <input style="float:right;" type="submit" class="btn btn-warning" value="Chirp"><br/>
-        </form>
+{% if chirp_from_page %}
+    <div class="panel panel-success" style="width:100%;">
+        <div class='panel-body'>
+            <form action="/chirp" method="POST">
+                <textarea id="chirp_content" name="content" class="form-control" placeholder="What's on your mind?"></textarea><br/>
+                <input style="float:right;" type="submit" class="btn btn-warning" value="Chirp"><br/>
+            </form>
+        </div>
     </div>
-</div>
+{% endif %}
 <br>
 <div id='lenmsg' style="position:fixed;top:0px;left:0px;width:100%;visibility:hidden;" class="panel panel-default">
   <div class="panel-body">Your chirp is too long (40+ characters) or too short (3- characters)</div>
@@ -17,7 +18,7 @@
     {% for chirp in chirps %}
       <div class="panel panel-warning" id="{{ chirp.id }}">
         <div class="panel-heading" id="{{ chirp.id }}_heading"><left>@{{ chirp.handle }}</left><right>{{ chirp.datetime.split('.')[0] }}</right></div>
-        <div class="panel-body" id="{{ chirp.id }}_body">{% autoescape false %}{{ chirp.body }}{% endautoescape %}</div>
+        <div class="panel-body" id="{{ chirp.id }}_body">{% autoescape false %}{{ markdown(chirp.body) }}{% endautoescape %}</div>
         <div class="panel-footer" id="{{ chirp.id }}_footer">{% if name == chirp.handle %}<right><a href="{{url_for('delete_chirp', chirp_id=chirp.id)}}">Delete</a></right>{% endif %}</div>
       </div>
     {% endfor %}

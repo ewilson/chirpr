@@ -17,9 +17,7 @@ def hash_ps(text):
     return hashlib.sha224(text.encode('utf-8')).hexdigest()
 
 
-def add_chirp(text, uID, MD=False):
-    if MD == False or '<script' in text:
-        text = text.replace('<', '&lt;') # to stop script tags
+def add_chirp(text, uID):
     db_exec('INSERT INTO chirp (body, user_id, datetime) VALUES (?,?,?)', (text, uID, str(datetime.datetime.utcnow())), commit=True)
 
 
@@ -54,7 +52,7 @@ def followers(uid):
     return db_exec('SELECT leader_id FROM followers WHERE follower_id=?', (uid,)).fetchall()
 
 
-def follow_data(leader_id):
+def user_data(leader_id):
     followers = {'count_followers':0}
     f = 'count_followers'
     for i in db_exec('SELECT leader_id, follower_id FROM followers WHERE leader_id=?', (leader_id,)):
@@ -62,6 +60,10 @@ def follow_data(leader_id):
             followers[f] += 1
     return followers
 
+
+def user_exists(uid):
+    exists = db_exec('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
+    return False if exists is None else True
 
 def get_user(uid):
     user = db_exec('SELECT handle FROM user WHERE id=:id', {'id':uid}).fetchone()
