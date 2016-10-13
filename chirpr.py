@@ -144,7 +144,8 @@ def chirp():
         MD = False
         if request.method == 'POST':
             content = request.form["content"]
-            db_access.add_chirp(content,user)
+            if len(content) in range(1,360) and content != '':
+                db_access.add_chirp(content,user)
         if 'filter' in request.args:
             chirp_list = db_access.get_chirps(db_access.get_id(request.args.get('filter')))
         else:

@@ -4,16 +4,13 @@
     <div class="panel panel-success" style="width:100%;">
         <div class='panel-body'>
             <form action="/chirp" method="POST">
-                <textarea id="chirp_content" name="content" class="form-control" placeholder="What's on your mind?"></textarea><br/>
+                <textarea id="chirp_content" name="content" class="form-control" placeholder="What's on your mind?" maxlength="180" minlength="1"></textarea><br/>
                 <input style="float:right;" type="submit" class="btn btn-warning" value="Chirp"><br/>
             </form>
         </div>
     </div>
 {% endif %}
 <br>
-<div id='lenmsg' style="position:fixed;top:0px;left:0px;width:100%;visibility:hidden;" class="panel panel-default">
-  <div class="panel-body">Your chirp is too long (40+ characters) or too short (3- characters)</div>
-</div>
 <div id="chirps">
     {% for chirp in chirps %}
       <div class="panel panel-warning" id="{{ chirp.id }}">
