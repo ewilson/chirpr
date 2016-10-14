@@ -2,35 +2,42 @@
 {% block body %}
 <h1>Search Results:</h1>
 <div class="panel-group">
-    {% for r in result %}
+    {% if result %}
+        {% for r in result %}
+            <div class="panel panel-default">
+                <a data-toggle="collapse" href="#collapse{{ r.handle }}">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  {{ r.handle }}
+                </h4>
+              </div>
+                </a>
+              <div id="collapse{{ r.handle }}" class="panel-collapse collapse">
+                {% if 'user' in session %}
+                    <div class="panel-body">
+                        {% if r.id in my_followers %}
+                            <a href="/user/page/{{ r.handle }}">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </a>
+                        {% else %}
+                            <a href="/follow/{{ r.id }}">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="panel-body"><a href="/account"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-plus"></span></a></div>
+                {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+    {% else %}
         <div class="panel panel-default">
-            <a data-toggle="collapse" href="#collapse{{ r.handle }}">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              {{ r.handle }}
-            </h4>
-          </div>
-            </a>
-          <div id="collapse{{ r.handle }}" class="panel-collapse collapse">
-            {% if 'user' in session %}
-                <div class="panel-body">
-                    {% if r.id in my_followers %}
-                        <a href="/user/page/{{ r.handle }}">
-                            <span class="glyphicon glyphicon-user"></span>
-                            <span class="glyphicon glyphicon-ok"></span>
-                        </a>
-                    {% else %}
-                        <a href="/follow/{{ r.id }}">
-                            <span class="glyphicon glyphicon-user"></span>
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-                    {% endif %}
-                </div>
-            {% else %}
-                <div class="panel-body"><a href="/account"><span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-plus"></span></a></div>
-            {% endif %}
-          </div>
+            <h1 style="padding:20px;">User Not Found!</h1>
+            <h1 style="padding:40px;">Sorry, no search results were found for '{{ qfill }}'.</h1>
         </div>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}
