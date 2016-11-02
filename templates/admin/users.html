@@ -13,7 +13,7 @@
         <tr>
           <td>{{ user.id }}</td><td>{{ user.handle }}</td>
           <td>{{ 'Yes' if user.admin else 'No' }}</td>
-          <td><a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a></td>
+          <td><form action="/admin/user/delete" method="POST"><input name="user_id" type="text" class="hidden" value="{{ user.id }}"/><input name="admin_ps" type="password" placeholder="Admin Password"/><button>Delete</button></form></td>
         </tr>
       {% endfor %}
       </tbody>
@@ -21,9 +21,4 @@
   {% else %}
     <h4>There are no users</h4>
   {% endif %}
-  <h3>Add new user</h3>
-  <form action="{{ url_for('add_user') }}" method="post">
-    <label>Username: <input type="text" name="handle"/></label><br/>
-    <input type="submit" value="Submit"><br/>
-  </form>
 {% endblock %}

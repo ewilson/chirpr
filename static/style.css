@@ -1,4 +1,4 @@
-body {
+body{
     background-color: white;
     color: darkblue;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -9,7 +9,7 @@ table, th, td{
     border: 1px solid darkblue;
     padding: 5px; 
 }
-table {
+table{
     border-collapse: collapse;
 }
 right{
@@ -17,4 +17,16 @@ right{
 }
 left{
     float:left;
+}
+.right{
+    float:right;
+}
+.left{
+    float:left;
+}
+.hidden{
+    visibility:none;
+}
+.show{
+    visibility:visible;
 }
