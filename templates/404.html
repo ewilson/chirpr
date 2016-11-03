@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="panel panel-default">
+    <h1 style="padding:20px;">404.</h1>
+    {% if notfound == 'user_page' %}
+        <h1 style="padding:40px;">Sorry, user '{{ handle }}' was not found.</h1>
+    {% endif %}
+</div>
+{% endblock %}
