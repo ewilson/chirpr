@@ -17,9 +17,10 @@ def users():
     return render_template('admin/users.html', users=user_list)
 
 
-@app.route('/admin/user/delete/<user_id>')
-def delete_user(user_id):
-    db_access.delete_user(user_id)
+@app.route('/admin/user/delete', methods=['POST'])
+def delete_user():
+    if request.form.get('admin_ps') == os.environ['admin_password']:
+        db_access.delete_user(request.form.get('user_id'))
     return redirect(url_for('users'))
  
 
@@ -85,6 +86,7 @@ def login_page():
 @app.route('/user/page/<handle>')
 def user_page(handle):
     uid = db_access.get_id(handle)
+    uid = uid if uid is not None else handle
     my_followers = []
     name = None
     chirp_list = []
@@ -94,9 +96,19 @@ def user_page(handle):
         name = db_access.get_user(user)
     if db_access.user_exists(uid) is True:
         chirp_list = db_access.get_chirps(uid)
+        handle = db_access.get_user(uid)
         return render_template('user_page.html', markdown=markdown2.markdown, handle=handle, uid=uid, user_data=db_access.user_data(uid), my_followers=my_followers, get_user=db_access.get_user,chirps=chirp_list, name=name)
     else:
         return render_template('404.html', notfound='user_page', handle=handle)
+        
+        
+@app.route('/user/bio', methods=["POST"])
+def bio():
+    if 'user' in session:
+        usr = session['user']
+        db_access.edit_bio(usr, request.form.get('bio'))
+        return redirect(url_for('user_page', handle=db_access.get_user(usr)))
+    return redirect(url_for('index'))
     
     
 @app.route('/search', methods=["POST", 'GET'])
@@ -124,12 +136,6 @@ def account():
     return render_template('account.html')
     
     
-@app.route('/admin/chirps')
-def chirps():
-    chirp_list = db_access.get_all_chirps()
-    return render_template('admin/chirps.html', chirps=chirp_list)
-    
-    
 @app.route('/chirps/<handle>')
 def chirps_hn(handle):
     uid = db_access.get_id(handle)
@@ -144,7 +150,7 @@ def chirp():
         MD = False
         if request.method == 'POST':
             content = request.form["content"]
-            if len(content) in range(1,360) and content != '':
+            if len(content) in range(1,360):
                 db_access.add_chirp(content,user)
         if 'filter' in request.args:
             chirp_list = db_access.get_chirps(db_access.get_id(request.args.get('filter')))

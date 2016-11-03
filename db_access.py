@@ -9,6 +9,7 @@ def db_exec(*args, commit=False):
     if commit == True:
         conn.execute(*args)
         conn.commit()
+        conn.close()
     else:
         return conn.execute(*args)
 
@@ -19,6 +20,10 @@ def hash_ps(text):
 
 def add_chirp(text, uID):
     db_exec('INSERT INTO chirp (body, user_id, datetime) VALUES (?,?,?)', (text, uID, str(datetime.datetime.utcnow())), commit=True)
+
+
+def edit_bio(uID, bio):
+    db_exec('UPDATE user SET bio=? WHERE id=?', (bio,uID), commit=True)
 
 
 def get_all_chirps(uid):
@@ -58,6 +63,7 @@ def user_data(leader_id):
     for i in db_exec('SELECT leader_id, follower_id FROM followers WHERE leader_id=?', (leader_id,)):
         if f in followers:
             followers[f] += 1
+    followers['bio'] = db_exec('SELECT bio FROM user WHERE id=?', (leader_id,)).fetchone()[0]
     return followers
 
 
@@ -91,9 +97,13 @@ def delete_user(user_id):
 
 def add_user(handle, password):
     password = hash_ps(password)
-    db_exec('INSERT INTO user (handle, password, admin) values (:handle, :password, :admin)', {'handle': handle, 'password':password, 'admin': 0}, commit=True)
-
-
+    conn = get_db()
+    conn.execute('INSERT INTO user (handle, password, admin, bio) values (:handle, :password, :admin, :bio)', {'handle': handle, 'password':password, 'admin': 0, 'bio':''})
+    conn.commit()
+    hid = get_id(handle)
+    conn.execute('INSERT INTO followers VALUES (?,?)',(hid,hid))
+    conn.commit()
+    
 def create_account(handle, password):
     res = db_exec('SELECT * FROM user WHERE handle=:handle', {'handle':handle})
     if list(res):

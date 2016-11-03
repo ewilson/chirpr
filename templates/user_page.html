@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 {% block body %}
+<script>
+var collapsed = true;
+var bio = '';
+function cancel_collapse_click(el, el2){
+    var el3 = document.getElementById('bio');
+    if(collapsed == true){
+        bio = el3.innerHTML;
+        el3.innerText = '';
+        el.className = "btn btn-warning";
+        el.innerText = "Cancel";
+        el2.className = "btn btn-warning show right";
+        collapsed = false;
+    }
+    else{
+        el3.innerHTML = bio;
+        el.className = "btn btn-block btn-warning";
+        el.innerText = "Edit Bio";
+        el2.className = "btn btn-warning hidden";
+        collapsed = true;
+    }
+}
+</script>
 <div class="panel panel-default">
   <div class="panel-heading">
     {% if handle != None %}
@@ -17,6 +39,19 @@
             </a>
         {% endif %}
         </div>
+        {% if 'user' in session and uid == session['user'] %}    
+            <div id="bio" class="container">{% autoescape false %}{{ markdown(user_data['bio']) }}{% endautoescape %}</div>    
+            <div id="editbio" class="collapse">
+                <form id="form1" action="/user/bio" method="POST">
+                    <textarea name="bio" placeholder="A little bit about you..." class="form-control">{{ user_data['bio'] }}</textarea>
+                </form>
+            </div>
+            <div>
+                <button id="cancel_collapse" onclick="cancel_collapse_click(this, document.getElementById('save'))" class="btn btn-block btn-warning" data-toggle="collapse" data-target="#editbio">Edit Bio</button><button id="save" onclick="document.getElementById('form1').submit();" class="btn btn-warning hidden">Save</button>
+            </div>
+        {% else %}
+            <div class="container">{{ user_data['bio'] }}</div>
+        {% endif %}
       <div class="panel-body">Followed By: {{ user_data['count_followers'] }}</div>
   {% else %}
     <center><font color='red'>This user doesn't exist.</font></center>
