@@ -26,7 +26,7 @@ def edit_bio(uID, bio):
     if len(bio) in range(1,180):
         db_exec('UPDATE user SET bio=? WHERE id=?', (bio,uID), commit=True)
         return True
-    return Fals
+    return False
 
 
 def get_all_chirps(uid):
