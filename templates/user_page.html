@@ -43,7 +43,7 @@ function cancel_collapse_click(el, el2){
             <div id="bio" class="container">{% autoescape false %}{{ markdown(user_data['bio']) }}{% endautoescape %}</div>    
             <div id="editbio" class="collapse">
                 <form id="form1" action="/user/bio" method="POST">
-                    <textarea name="bio" placeholder="A little bit about you..." class="form-control">{{ user_data['bio'] }}</textarea>
+                    <textarea name="bio" placeholder="A little bit about you..." class="form-control" minlength="1" maxlength="180">{{ user_data['bio'] }}</textarea>
                 </form>
             </div>
             <div>
