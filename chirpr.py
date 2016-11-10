@@ -106,7 +106,9 @@ def user_page(handle):
 def bio():
     if 'user' in session:
         usr = session['user']
-        db_access.edit_bio(usr, request.form.get('bio'))
+        status = db_access.edit_bio(usr, request.form.get('bio'))
+        if status == False:
+            flash('Bio is too long or too short.', "danger_message")
         return redirect(url_for('user_page', handle=db_access.get_user(usr)))
     return redirect(url_for('index'))
     

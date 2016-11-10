@@ -23,7 +23,7 @@ def add_chirp(text, uID):
 
 
 def edit_bio(uID, bio):
-    if len(bio) in range(0,180):
+    if len(bio) in range(1,180):
         db_exec('UPDATE user SET bio=? WHERE id=?', (bio,uID), commit=True)
         return True
     return Fals
