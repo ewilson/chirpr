@@ -164,8 +164,17 @@ def chirp():
     
 @app.route('/chirp/delete/<chirp_id>')
 def delete_chirp(chirp_id):
-    if 'user' in session:
+    if 'user' in session and db_access.owner(chirp_id, session['user']):
         db_access.delete_chirp(chirp_id, session['user'])
+    return redirect(url_for('chirp'))
+    
+@app.route('/chirp/edit/<chirp_id>', methods=['GET', 'POST'])
+def edit_chirp(chirp_id):
+    if 'user' in session and db_access.owner(chirp_id, session['user']):
+        if request.method == 'POST':
+            db_access.edit_chirp(chirp_id, request.form['content'])
+        else:
+            return render_template('edit_chirp.html', chirp_data=db_access.get_chirp(chirp_id))
     return redirect(url_for('chirp'))
     
 app.secret_key = os.environ['SECRET_KEY']

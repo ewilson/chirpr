@@ -17,6 +17,10 @@ def db_exec(*args, commit=False):
 def hash_ps(text):
     return hashlib.sha224(text.encode('utf-8')).hexdigest()
 
+def owner(chirp_id, user_id):
+    for x in db_exec('SELECT * FROM chirp WHERE id=:cid AND user_id=:uid', {'cid':chirp_id, 'uid':user_id}):
+        return True
+    return False
 
 def add_chirp(text, uID):
     db_exec('INSERT INTO chirp (body, user_id, datetime) VALUES (?,?,?)', (text, uID, str(datetime.datetime.utcnow())), commit=True)
@@ -35,11 +39,17 @@ def get_all_chirps(uid):
 
 def get_chirps(uid):
     return db_exec('SELECT c.id, c.body, c.datetime, u.handle FROM chirp c, user u WHERE c.user_id = u.id AND c.user_id=? ORDER BY c.id DESC', (uid,)).fetchmany(100)
+    
+    
+def get_chirp(cid):
+    return db_exec('SELECT body FROM chirp WHERE id=?', (cid,)).fetchone()[0]
 
 
 def delete_chirp(chirp_id, user_id):
     db_exec('DELETE FROM chirp WHERE id = :id AND user_id = :uid', {'id': chirp_id, 'uid':user_id}, commit=True)
 
+def edit_chirp(chirp_id, content):
+    db_exec('UPDATE chirp SET body=? WHERE id=?', (content,chirp_id), commit=True)
 
 def get_all_users():
     return db_exec('SELECT id, handle, admin FROM user').fetchall()
