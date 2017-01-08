@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block body %}
+    <form action="{{ request.url }}" method="POST">
+        <textarea name="content" class="form-control" placeholder="What's on your mind?" maxlength="180" minlength="1">{{ chirp_data }} </textarea><br/>
+        <input style="float:right;" type="submit" class="btn btn-warning" value="Edit Chirp"><br/>
+    </form>
+{% endblock %}

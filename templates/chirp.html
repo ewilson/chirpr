@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body %} 
+{% if chirp_from_page %}
+    <div class="panel panel-success" style="width:100%;">
+        <div class='panel-body'>
+            <form action="/chirp" method="POST">
+                <textarea id="chirp_content" name="content" class="form-control" placeholder="What's on your mind?" maxlength="180" minlength="1"></textarea><br/>
+                <input style="float:right;" type="submit" class="btn btn-warning" value="Chirp"><br/>
+            </form>
+        </div>
+    </div>
+{% endif %}
+<br>
+<div id="chirps">
+    {% for chirp in chirps %}
+        {% if name == chirp.handle %}
+          <div class="panel panel-warning" id="{{ chirp.id }}">
+            <div class="panel-heading" id="{{ chirp.id }}_heading"><left><a href="/user/page/{{ chirp.handle }}">@{{ chirp.handle }}</a></left><right>{{ chirp.datetime.split('.')[0] }}</right></div>
+            <div class="panel-body" id="{{ chirp.id }}_body">
+                {% autoescape false %}
+                    {{ markdown(chirp.body) }}
+                {% endautoescape %}
+            </div>
+            <div class="panel-footer" id="{{ chirp.id }}_footer">
+                <button onclick="window.location.href = '{{url_for('edit_chirp', chirp_id=chirp.id)}}';" class="btn btn-warning left">Edit Bio</button><button onclick="window.location.href = '{{url_for('delete_chirp', chirp_id=chirp.id)}}';" class="btn btn-danger right">Delete</button>
+            </div>
+          </div>
+        {% else %}
+          <div class="panel panel-warning" id="{{ chirp.id }}">
+            <div class="panel-heading" id="{{ chirp.id }}_heading"><left><a href="/user/page/{{ chirp.handle }}">@{{ chirp.handle }}</a></left><right>{{ chirp.datetime.split('.')[0] }}</right></div>
+            <div class="panel-body" id="{{ chirp.id }}_body">{% autoescape false %}{{ markdown(chirp.body) }}{% endautoescape %}</div>
+            <div class="panel-footer" id="{{ chirp.id }}_footer"></div>
+          </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
